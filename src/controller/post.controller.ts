@@ -1,27 +1,30 @@
 import { Router, Response, Request } from 'express'
+import { PostService } from '../services/post.service';
 
 export class PostController {
   public router: Router;
+  private postService: PostService;
 
   constructor() {
     this.router = Router();
+    this.postService = new PostService();
     this.routes();
   }
 
   public index = async (req: Request, res: Response) => {
-    res.send('Index');
+    res.send(this.postService.index());
   }
 
   public post = async (req: Request, res: Response) => {
-    res.send('Create');
+    res.send(this.postService.create());
   }
 
   public put = async (req: Request, res: Response) => {
-    res.send('Update');
+    res.send(this.postService.update());
   }
 
   public delete = async (req: Request, res: Response) => {
-    res.send('Delete');
+    res.send(this.postService.delete());
   }
 
   public routes() {
