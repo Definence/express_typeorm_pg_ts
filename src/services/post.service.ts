@@ -1,19 +1,32 @@
+import { getConnection } from "typeorm";
+import { PostEntity } from "../database/entities/post";
+import { PostRepository } from "../repository/post.repository"
+
 export class PostService {
-  constructor() {}
+  private postReposiitory: PostRepository;
 
-  public index = () => {
-    return 'index from Service'
+  constructor() {
+    this.postReposiitory = getConnection('blog').getCustomRepository(PostRepository);
   }
 
-  public create = () => {
-    return 'create from Service'
+  public index = async () => {
+    const posts = await this.postReposiitory.find();
+    return posts;
   }
 
-  public update = () => {
-    return 'update from Service'
+  public create = async (post: PostEntity) => {
+    const newPost = await this.postReposiitory.save(post);
+    return newPost;
   }
 
-  public delete = () => {
-    return 'delete from Service'
+  public update = async (id: number, post: PostEntity) => {
+    // const updatedPost = await this.postReposiitory.save({ ...post, id });
+    const updatedPost = await this.postReposiitory.update(id, post);
+    return updatedPost;
+  }
+
+  public delete = async (id: number) => {
+    const deletedPost = await this.postReposiitory.delete(id);
+    return deletedPost;
   }
 }

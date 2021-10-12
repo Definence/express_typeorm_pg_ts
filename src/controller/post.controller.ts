@@ -1,5 +1,6 @@
 import { Router, Response, Request } from 'express'
 import { PostService } from '../services/post.service';
+import { PostEntity } from "../database/entities/post";
 
 export class PostController {
   public router: Router;
@@ -12,19 +13,31 @@ export class PostController {
   }
 
   public index = async (req: Request, res: Response) => {
-    res.send(this.postService.index());
+    const result = await this.postService.index()
+
+    res.send(result);
   }
 
   public post = async (req: Request, res: Response) => {
-    res.send(this.postService.create());
+    const post = req.body as PostEntity;
+    const result = await this.postService.create(post);
+
+    res.send(result);
   }
 
   public put = async (req: Request, res: Response) => {
-    res.send(this.postService.update());
+    const post = req.body as PostEntity;
+    const id = req.params.id;
+    const result = await this.postService.update(Number(id), post);
+
+    res.send(result);
   }
 
   public delete = async (req: Request, res: Response) => {
-    res.send(this.postService.delete());
+    const id = req.params.id;
+    const result = await this.postService.delete(Number(id));
+
+    res.send(result);
   }
 
   public routes() {
