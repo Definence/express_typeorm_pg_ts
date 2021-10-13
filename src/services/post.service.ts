@@ -1,8 +1,10 @@
+import { validate } from "class-validator";
 import { IPostPermitted, Post } from "../entity/post";
+import { User } from "../entity/user";
 
 export class PostService {
-  public index = async () => {
-    const posts = await Post.find({ relations: ['user'] });
+  public index = async (user: User) => {
+    const posts = await Post.find({ where: { user }, relations: ['user'] });
     return posts;
   }
 
@@ -12,14 +14,18 @@ export class PostService {
   }
 
   public create = async (post: IPostPermitted) => {
-    const newPost = await Post.create(post);
-    return newPost.save();
+    const newData = await Post.create(post);
+    const errors = await validate(newData);
+    if (errors.length > 0) throw errors;
+    return newData.save();
   }
 
   public update = async (uuid: string, post: IPostPermitted) => {
     const record = await Post.findOneOrFail({ uuid })
     record.content = post.content || record.content
     record.title = post.title || record.title
+    const errors = await validate(record)
+    if (errors.length > 0) throw errors
     const updatedPost = await record.save();
     return updatedPost;
   }

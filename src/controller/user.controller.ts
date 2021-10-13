@@ -1,6 +1,5 @@
 import { Router, Response, Request } from 'express'
 import { UserService } from '../services/user.service';
-import { Post } from "../entity/post";
 
 export class UserController {
   public router: Router;
@@ -32,9 +31,9 @@ export class UserController {
   }
 
   public post = async (req: Request, res: Response) => {
-    const { name } = req.body;
     try {
-      const result = await this.userService.create({ name });
+      const { name, email, role } = req.body;
+      const result = await this.userService.create({ name, email, role });
       res.status(201).json(result);
     } catch (err) {
       res.status(422).json(err)
@@ -43,9 +42,9 @@ export class UserController {
 
   public put = async (req: Request, res: Response) => {
     try {
-      const { name } = req.body;
+      const { name, email, role } = req.body;
       const { uuid } = req.params;
-      const result = await this.userService.update(uuid, { name });
+      const result = await this.userService.update(uuid, { name, email, role });
       res.json(result);
     } catch (err) {
       res.status(422).json(err)

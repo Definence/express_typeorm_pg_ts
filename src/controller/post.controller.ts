@@ -13,9 +13,12 @@ export class PostController {
     this.routes();
   }
 
-  public index = async (_req: Request, res: Response) => {
+  public index = async (req: Request, res: Response) => {
     try {
-      const result = await this.postService.index()
+      const { userUuid } = req.query as { userUuid: string };
+      if (!userUuid) throw 'User missing'
+      const user = await User.findOneOrFail({ uuid: userUuid })
+      const result = await this.postService.index(user)
       res.send(result);
     } catch {
       res.status(500).json({ error: 'Something went wrong' })
