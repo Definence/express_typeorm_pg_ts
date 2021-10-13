@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { createConnection } from 'typeorm';
 import { PostController } from './controller/post.controller';
+import "reflect-metadata";
 
 class Server {
   private postController: PostController;
@@ -31,16 +32,17 @@ class Server {
       username: 'blog',
       password: 'blog',
       database: 'blog',
-      entities: ['build/database/entities/**/*.js'],
-      synchronize: true,
+      entities: ['build/entity/**/*.js'],
+      // synchronize: true, // rails schema:load analogue
     })
   }
 
   public initRoutes() {
     this.postController = new PostController();
+
     this.app.use('/api/posts/', this.postController.router);
-    this.app.get('/', (req: Request, res: Response) => {
-      res.send('Hello world')
+    this.app.get('/', (_req: Request, res: Response) => {
+      res.send('Hello world. This is sample application based on ExpressJS, TypeORM, PG and TS')
     });
   }
 

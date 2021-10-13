@@ -1,6 +1,6 @@
 import { Router, Response, Request } from 'express'
 import { PostService } from '../services/post.service';
-import { PostEntity } from "../database/entities/post";
+import { PostEntity } from "../entity/post";
 
 export class PostController {
   public router: Router;

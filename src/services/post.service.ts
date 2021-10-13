@@ -1,5 +1,5 @@
 import { getConnection } from "typeorm";
-import { PostEntity } from "../database/entities/post";
+import { PostEntity } from "../entity/post";
 import { PostRepository } from "../repository/post.repository"
 
 export class PostService {
