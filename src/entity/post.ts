@@ -1,32 +1,21 @@
-import { Column, Entity, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm'
-import { v4 as uuid } from 'uuid'
+import { Column, Entity, ManyToOne } from 'typeorm'
+import { Base } from './base'
+import { User } from './user'
+
+export type IPostPermitted = {
+  title: string
+  content: string
+  user: User
+}
 
 @Entity('posts')
-export class Post extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Post extends Base {
+  @Column()
+  title: string;
 
-    @Column({ type: 'uuid' })
-    uuid: string;
+  @Column()
+  content: string;
 
-    @Column()
-    title: string;
-
-    @Column()
-    content: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @BeforeInsert()
-    uuidSequence() {
-        this.uuid = uuid()
-    }
-
-    toJSON() {
-        return { ...this, id: undefined }
-    }
+  @ManyToOne(() => User, user => user.posts)
+  user: User;
 }

@@ -1,21 +1,20 @@
 import { Router, Response, Request } from 'express'
-import { PostService } from '../services/post.service';
+import { UserService } from '../services/user.service';
 import { Post } from "../entity/post";
-import { User } from '../entity/user';
 
-export class PostController {
+export class UserController {
   public router: Router;
-  private postService: PostService;
+  private userService: UserService;
 
   constructor() {
     this.router = Router();
-    this.postService = new PostService();
+    this.userService = new UserService();
     this.routes();
   }
 
   public index = async (_req: Request, res: Response) => {
     try {
-      const result = await this.postService.index()
+      const result = await this.userService.index()
       res.send(result);
     } catch {
       res.status(500).json({ error: 'Something went wrong' })
@@ -25,7 +24,7 @@ export class PostController {
   public show = async (req: Request, res: Response) => {
     try {
       const { uuid } = req.params;
-      const result = await this.postService.show(uuid)
+      const result = await this.userService.show(uuid)
       res.send(result);
     } catch {
       res.status(404).json({ error: 'Entity not found' })
@@ -33,11 +32,9 @@ export class PostController {
   }
 
   public post = async (req: Request, res: Response) => {
-    const { title, content, userUuid } = req.body;
-    const user = await User.findOneOrFail({ uuid: userUuid })
-
+    const { name } = req.body;
     try {
-      const result = await this.postService.create({ title, content, user });
+      const result = await this.userService.create({ name });
       res.status(201).json(result);
     } catch (err) {
       res.status(422).json(err)
@@ -46,11 +43,9 @@ export class PostController {
 
   public put = async (req: Request, res: Response) => {
     try {
-      const { title, content } = req.body;
-      const { uuid, userUuid } = req.params;
-      const user = await User.findOneOrFail({ uuid: userUuid })
-
-      const result = await this.postService.update(uuid, { title, content, user });
+      const { name } = req.body;
+      const { uuid } = req.params;
+      const result = await this.userService.update(uuid, { name });
       res.json(result);
     } catch (err) {
       res.status(422).json(err)
@@ -60,7 +55,7 @@ export class PostController {
   public delete = async (req: Request, res: Response) => {
     try {
       const { uuid } = req.params;
-      const result = await this.postService.delete(uuid);
+      const result = await this.userService.delete(uuid);
       return res.json(result)
     } catch {
       res.status(500).json({ error: 'Something went wrong' })

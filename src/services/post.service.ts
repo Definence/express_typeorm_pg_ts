@@ -1,13 +1,8 @@
-import { Post } from "../entity/post";
-
-type IPostPermitted = {
-  title: string
-  content: string
-}
+import { IPostPermitted, Post } from "../entity/post";
 
 export class PostService {
   public index = async () => {
-    const posts = await Post.find();
+    const posts = await Post.find({ relations: ['user'] });
     return posts;
   }
 
